@@ -155,3 +155,9 @@ Hệ thống tập trung vào:
 * Quản lý quy trình cấp GPLX
 * Không mô phỏng thi thực tế
 * Đảm bảo đơn giản, dễ triển khai nhưng vẫn đầy đủ nghiệp vụ
+
+
+## Công nghệ sử dụng
+* Font-end: HTML, CSS, JS, Boostrap 5
+* Back-end: Java Spring Boot 4.0.4 (Spring Web, Spring Data, Spring Security), (Java 21)
+* Database: MySQL 
