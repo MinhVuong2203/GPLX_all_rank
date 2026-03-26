@@ -161,3 +161,17 @@ Hệ thống tập trung vào:
 * Font-end: HTML, CSS, JS, Boostrap 5
 * Back-end: Java Spring Boot 4.0.4 (Spring Web, Spring Data, Spring Security), (Java 21)
 * Database: MySQL 
+
+## Cấu trúc thư mục
+```
+├── GplxManagementApplication.java   (main)
+│
+├── controller/     ( nhận request (API))
+├── service/        ( xử lý logic)
+├── repository/     ( làm việc DB)
+├── entity/         ( mapping bảng DB)
+├── dto/            ( dữ liệu truyền (request/response))
+├── config/         ( cấu hình (security, cors…))
+├── exception/      ( xử lý lỗi global)
+└── util/           ( helper (nếu cần))
+```
