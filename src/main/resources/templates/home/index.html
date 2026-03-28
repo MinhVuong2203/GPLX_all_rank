@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head('GPLX Management - Trang chu', '/css/home/index.css')}"></head>
+
+<body>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/common :: sidebar('home')}"></aside>
+
+        <div class="app-main">
+            <nav th:replace="~{fragments/common :: topbar('Trang chu')}"></nav>
+
+            <main class="content-wrap">
+                <section class="hero-panel mb-3">
+                    <p class="text-uppercase text-secondary small mb-2">Hệ thống quản lý GPLX</p>
+                    <h1 class="display-6 mb-3">Quản lý hồ sơ nhanh, rõ ràng và dễ theo dõi</h1>
+                    <p class="text-secondary mb-4">Quản lý công dân, xử lý hồ sơ và xét duyệt theo từng quy trình trên
+                        các trang tách riêng.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-primary" th:href="@{/profiles}">Vào module Hồ sơ</a>
+                        <a class="btn btn-outline-primary" th:href="@{/profiles/citizens}">Vào trang Công dân</a>
+                        <a class="btn btn-outline-primary" th:href="@{/profiles/applications}">Vào trang Hồ sơ thi</a>
+                    </div>
+                </section>
+
+                <section class="feature-grid">
+                    <article class="panel-card p-3">
+                        <h3 class="h5">Quản lý Công dân</h3>
+                        <p class="text-secondary mb-0">Đầy đủ thao tác thêm, sửa, xóa, tra cứu CCCD và tải ảnh 3x4.</p>
+                    </article>
+                    <article class="panel-card p-3">
+                        <h3 class="h5">Danh sách thông minh</h3>
+                        <p class="text-secondary mb-0">Danh sách có phân trang và trang riêng cho công dân mới trong
+                            ngày.</p>
+                    </article>
+                    <article class="panel-card p-3">
+                        <h3 class="h5">Xét duyệt Hồ sơ</h3>
+                        <p class="text-secondary mb-0">Xử lý vòng đời hồ sơ và xét duyệt theo hạng giấy phép tương ứng.
+                        </p>
+                    </article>
+                </section>
+
+                <section class="card p-3 mt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="h5 mb-0">Thông tin Hạng Giấy Phép</h2>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Mã hạng</th>
+                                    <th>Tên hạng</th>
+                                    <th>Mô tả chi tiết</th>
+                                    <th>Độ tuổi tối thiểu</th>
+                                    <th>Thời hạn (năm)</th>
+                                    <th>Thực hành</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${licenseRanks == null || licenseRanks.isEmpty()}">
+                                    <td colspan="6" class="text-center text-secondary">Không có dữ liệu hạng giấy phép.
+                                    </td>
+                                </tr>
+                                <tr th:each="h : ${licenseRanks}">
+                                    <td th:text="${h.maHang}"></td>
+                                    <td th:text="${h.tenHang}"></td>
+                                    <td th:text="${h.MoTaChiTiet != null ? h.MoTaChiTiet : '-'}"></td>
+                                    <td th:text="${h.doTuoiToiThieu != null ? h.doTuoiToiThieu : '-'}"></td>
+                                    <td th:text="${h.thoiHanNam != null ? h.thoiHanNam : 'Không thời hạn'}"></td>
+                                    <td th:text="${h.yeuCauThucHanh != null && h.yeuCauThucHanh ? 'Có' : 'Không'}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+            <footer th:replace="~{fragments/common :: footer}"></footer>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/common :: scripts('/js/home/index.js')}"></th:block>
+</body>
+
+</html>

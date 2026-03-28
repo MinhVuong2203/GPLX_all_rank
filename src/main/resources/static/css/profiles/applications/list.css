@@ -1,0 +1,4 @@
+/* Applications list page scoped styles */
+.table-wrap .badge {
+    white-space: nowrap;
+}

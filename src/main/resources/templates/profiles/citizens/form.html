@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head('Trang Cong dan', '/css/profiles/citizens/form.css')}"></head>
+
+<body>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/common :: sidebar('citizens.form')}"></aside>
+
+        <div class="app-main">
+            <nav th:replace="~{fragments/common :: topbar('Trang cong dan')}"></nav>
+
+            <main class="content-wrap">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+                    <div>
+                        <h1 class="h4 mb-1">Trang Công dân</h1>
+                        <p class="text-secondary mb-0">Tra cứu theo CCCD, chỉnh sửa thông tin và tải ảnh hồ sơ sức khỏe.
+                        </p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-outline-primary btn-sm" th:href="@{/profiles/citizens/statistics}">Trang thống
+                            kê</a>
+                        <a class="btn btn-outline-primary btn-sm" th:href="@{/profiles/applications/new}">Thêm hồ sơ
+                            thi</a>
+                    </div>
+                </div>
+
+                <section class="card p-3">
+                    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                    <form class="row g-2 align-items-center mb-3" th:action="@{/profiles/citizens/search}" method="get">
+                        <div class="col-md-5 col-lg-4">
+                            <input class="form-control" type="text" name="cccd" placeholder="Nhập CCCD để tra cứu"
+                                th:value="${searchValue}">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm">Tìm theo CCCD</button>
+                        </div>
+                        <div class="col-auto">
+                            <a class="btn btn-outline-secondary btn-sm" th:href="@{/profiles/citizens}">Đặt lại tra
+                                cứu</a>
+                        </div>
+                        <div class="col-auto text-secondary">Công dân mới hôm nay: <strong
+                                th:text="${todayCount}"></strong></div>
+                    </form>
+
+                    <form
+                        th:action="${isEditing} ? @{/profiles/citizens/{id}/update(id=${citizenId})} : @{/profiles/citizens/create}"
+                        method="post" enctype="multipart/form-data" class="grid-form">
+                        <label>Public ID
+                            <input class="form-control" type="text" name="publicId" th:value="${citizen.publicId}"
+                                placeholder="Để trống để tự động tạo">
+                        </label>
+                        <label>Họ tên
+                            <input class="form-control" type="text" name="hoTen" th:value="${citizen.hoTen}" required>
+                        </label>
+                        <label>Ngày sinh
+                            <input class="form-control" type="date" name="ngaySinh" th:value="${citizen.ngaySinh}"
+                                required>
+                        </label>
+                        <label>Giới tính
+                            <input class="form-control" type="text" name="gioiTinh" th:value="${citizen.gioiTinh}">
+                        </label>
+                        <label>CCCD
+                            <input class="form-control" type="text" name="cccd" th:value="${citizen.cccd}"
+                                pattern="([0-9]{9}|[0-9]{12})" title="CCCD phải gồm đúng 9 hoặc 12 chữ số" required>
+                        </label>
+
+                        <label>Tinh / Thanh pho
+                            <select class="form-select" id="diaChiTinhSelect" name="tinhCode">
+                                <option value="">-- Chon tinh / thanh pho --</option>
+                                <option th:each="p : ${provinces}" th:value="${p.code}" th:text="${p.name}"></option>
+                            </select>
+                        </label>
+                        <label>Phuong / Xa
+                            <select class="form-select" id="diaChiPhuongXaSelect" name="phuongXaCode" disabled>
+                                <option value="">-- Chon phuong / xa --</option>
+                            </select>
+                        </label>
+
+                        <input type="hidden" name="diaChiTinh" id="diaChiTinhName">
+                        <input type="hidden" name="diaChiPhuongXa" id="diaChiPhuongXaName">
+                        <input type="hidden" id="savedProvinceName" th:value="${savedProvinceName}">
+                        <input type="hidden" id="savedWardName" th:value="${savedWardName}">
+
+                        <label class="full-width">Dia chi chi tiet
+                            <input class="form-control" type="text" name="diaChi" th:value="${citizen.diaChi}"
+                                placeholder="So nha, ten duong... (se ghep voi phuong/xa va tinh)">
+                        </label>
+                        <label>Số điện thoại
+                            <input class="form-control" type="text" name="soDienThoai" th:value="${citizen.soDienThoai}"
+                                pattern="[0-9]{10,11}" title="Số điện thoại phải gồm 10 hoặc 11 chữ số">
+                        </label>
+                        <label>Email
+                            <input class="form-control" type="email" name="email" th:value="${citizen.email}"
+                                pattern="[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+                                title="Email không đúng định dạng">
+                        </label>
+                        <label>Tình trạng sức khỏe
+                            <input class="form-control" type="text" name="tinhTrangSucKhoe"
+                                th:value="${citizen.tinhTrangSucKhoe}">
+                        </label>
+                        <label>Ngày khám sức khỏe
+                            <input class="form-control" type="date" name="ngayKhamSucKhoe"
+                                th:value="${citizen.ngayKhamSucKhoe}">
+                        </label>
+                        <label>Giấy khám sức khỏe
+                            <input class="form-control" type="text" name="giayKhamSucKhoe"
+                                th:value="${citizen.giayKhamSucKhoe}"
+                                placeholder="Path giấy khám sẽ tự cập nhật khi upload">
+                        </label>
+                        <label>Ngày tạo
+                            <input class="form-control" type="datetime-local" name="ngayTaoInput"
+                                th:value="${citizen.ngayTao != null ? #temporals.format(citizen.ngayTao, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                        </label>
+
+                        <label class="full-width">Upload giấy khám sức khỏe (chỉ lưu path)
+                            <input class="form-control" type="file" name="healthPaperFile" accept="image/*,.pdf">
+                        </label>
+                        <div class="full-width" th:if="${citizen.giayKhamSucKhoe}">
+                            <span><strong>Giấy khám hiện tại:</strong></span>
+                            <a class="ms-2" th:href="@{'/' + ${citizen.giayKhamSucKhoe}}"
+                                th:text="${citizen.giayKhamSucKhoe}" target="_blank"></a>
+                        </div>
+
+                        <label class="full-width">Upload ảnh công dân 3x4 (chỉ lưu path)
+                            <input class="form-control" id="imageFileInput" type="file" name="imageFile"
+                                accept="image/*">
+                        </label>
+                        <div class="full-width">
+                            <img id="citizenImagePreview" class="avatar-preview" alt="Ảnh công dân"
+                                th:src="${citizen.anh3x4 != null} ? @{'/' + ${citizen.anh3x4}} : ''"
+                                th:style="${citizen.anh3x4 != null} ? '' : 'display:none'">
+                        </div>
+                        <div class="full-width d-flex flex-wrap gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm"
+                                th:text="${isEditing} ? 'Cập nhật' : 'Thêm mới'"></button>
+                            <button type="reset" class="btn btn-outline-secondary btn-sm">Đặt lại</button>
+                            <a class="btn btn-outline-secondary btn-sm" th:href="@{/profiles/citizens}">Form trống</a>
+                        </div>
+                    </form>
+                </section>
+            </main>
+            <footer th:replace="~{fragments/common :: footer}"></footer>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/common :: scripts('/js/profiles/citizens/form.js')}"></th:block>
+</body>
+
+</html>

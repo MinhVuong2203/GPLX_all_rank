@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head('Ket qua tra cuu Cong dan', '/css/profiles/citizens/search.css')}"></head>
+
+<body>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/common :: sidebar('citizens.form')}"></aside>
+
+        <div class="app-main">
+            <nav th:replace="~{fragments/common :: topbar('Ket qua tra cuu')}"></nav>
+
+            <main class="content-wrap">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="h4 mb-0">Kết quả cho CCCD: <span th:text="${searchValue}"></span></h1>
+                    <a class="btn btn-outline-primary btn-sm" th:href="@{/profiles/citizens}">Quay lại trang Công
+                        dân</a>
+                </div>
+
+                <section class="card p-3 detail-grid">
+                    <div><strong>ID:</strong> <span th:text="${searchResult.id}"></span></div>
+                    <div><strong>Public ID:</strong> <span th:text="${searchResult.publicId}"></span></div>
+                    <div><strong>Họ tên:</strong> <span th:text="${searchResult.hoTen}"></span></div>
+                    <div><strong>Ngày sinh:</strong> <span th:text="${searchResult.ngaySinh}"></span></div>
+                    <div><strong>Giới tính:</strong> <span th:text="${searchResult.gioiTinh}"></span></div>
+                    <div><strong>CCCD:</strong> <span th:text="${searchResult.cccd}"></span></div>
+                    <div><strong>Địa chỉ:</strong> <span th:text="${searchResult.diaChi}"></span></div>
+                    <div><strong>Số điện thoại:</strong> <span th:text="${searchResult.soDienThoai}"></span></div>
+                    <div><strong>Email:</strong> <span th:text="${searchResult.email}"></span></div>
+                    <div><strong>Tình trạng sức khỏe:</strong> <span th:text="${searchResult.tinhTrangSucKhoe}"></span>
+                    </div>
+                    <div><strong>Ngày khám sức khỏe:</strong> <span th:text="${searchResult.ngayKhamSucKhoe}"></span>
+                    </div>
+                    <div><strong>Giấy khám:</strong> <span th:text="${searchResult.giayKhamSucKhoe}"></span></div>
+                    <div><strong>Ngày tạo:</strong> <span
+                            th:text="${searchResult.ngayTao != null ? #temporals.format(searchResult.ngayTao, 'yyyy-MM-dd HH:mm') : '-'}"></span>
+                    </div>
+                    <div><strong>Ảnh:</strong>
+                        <img th:if="${searchResult.anh3x4}" th:src="@{'/' + ${searchResult.anh3x4}}" alt="Ảnh công dân"
+                            class="avatar-preview">
+                        <span th:unless="${searchResult.anh3x4}">-</span>
+                    </div>
+                </section>
+            </main>
+            <footer th:replace="~{fragments/common :: footer}"></footer>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/common :: scripts('/js/profiles/citizens/search.js')}"></th:block>
+</body>
+
+</html>

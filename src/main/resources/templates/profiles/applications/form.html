@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head(${pageTitle}, '/css/profiles/applications/form.css')}"></head>
+
+<body>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/common :: sidebar('applications.form')}"></aside>
+
+        <div class="app-main">
+            <nav th:replace="~{fragments/common :: topbar(${pageTitle})}"></nav>
+
+            <main class="content-wrap">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h1 class="h4 mb-0" th:text="${pageTitle}"></h1>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-outline-primary btn-sm" th:href="@{/profiles/applications/approval}">Trang xét
+                            duyệt</a>
+                        <a class="btn btn-outline-secondary btn-sm" th:href="@{/profiles/applications}">Danh sách hồ
+                            sơ</a>
+                    </div>
+                </div>
+
+                <section class="card p-3">
+                    <form class="row g-2 mb-3" th:action="@{/profiles/applications/new}" method="get">
+                        <div class="col-sm-6 col-lg-4">
+                            <input type="text" name="cccd" class="form-control" placeholder="Tìm công dân theo CCCD"
+                                th:value="${searchCccd}">
+                        </div>
+                        <div class="col-auto d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm">Lọc công dân</button>
+                            <a class="btn btn-outline-secondary btn-sm" th:href="@{/profiles/applications/new}">Đặt
+                                lại</a>
+                        </div>
+                    </form>
+
+                    <form th:action="${formAction}" method="post" class="grid-form">
+                        <label>Public ID
+                            <input type="text" class="form-control" name="publicId" th:value="${application.publicId}"
+                                placeholder="Để trống để tự động tạo">
+                        </label>
+
+                        <label>Công dân
+                            <select id="maCongDanId" class="form-select" name="maCongDanId" required>
+                                <option value="">-- Chọn công dân --</option>
+                                <option th:each="c : ${citizens}" th:value="${c.id}"
+                                    th:selected="${application.maCongDanId != null && application.maCongDanId == c.id}"
+                                    th:attr="data-hoten=${c.hoTen},
+                                     data-cccd=${c.cccd},
+                                     data-phone=${c.soDienThoai},
+                                     data-ngaysinh=${c.ngaySinh},
+                                     data-gioitinh=${c.gioiTinh},
+                                     data-email=${c.email},
+                                     data-diachi=${c.diaChi},
+                                     data-suckhoe=${c.tinhTrangSucKhoe},
+                                     data-ngaykham=${c.ngayKhamSucKhoe},
+                                     data-anh=${c.anh3x4}" th:text="${c.hoTen + ' (' + c.cccd + ')'}"></option>
+                            </select>
+                        </label>
+
+                        <label>Hạng giấy phép
+                            <select id="maHangId" class="form-select" name="maHangId" required>
+                                <option value="">-- Chọn hạng --</option>
+                                <option th:each="h : ${licenseRanks}" th:value="${h.maHang}"
+                                    th:selected="${application.maHangId != null && application.maHangId == h.maHang}"
+                                    th:attr="data-tenhang=${h.tenHang},data-loaixe=${h.loaiXe}"
+                                    th:text="${h.maHang + ' - ' + h.tenHang}"></option>
+                            </select>
+                        </label>
+
+                        <label>Ngày nộp
+                            <input type="datetime-local" class="form-control" name="ngayNopInput"
+                                th:value="${application.ngayNop != null ? #temporals.format(application.ngayNop, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                        </label>
+
+                        <label>Trạng thái
+                            <select name="trangThai" class="form-select">
+                                <option value="">-- Mặc định hệ thống --</option>
+                                <option th:each="status : ${approvalStatuses}" th:value="${status}"
+                                    th:selected="${application.trangThai == status}" th:text="${status}"></option>
+                            </select>
+                        </label>
+
+                        <label class="d-flex align-items-center gap-2 mt-4">
+                            <input type="checkbox" class="form-check-input" name="trangThaiThanhToan"
+                                th:checked="${application.trangThaiThanhToan}">
+                            <span>Đã thanh toán</span>
+                        </label>
+
+                        <div class="full-width detail-panel" id="citizenDetailPanel">
+                            <h3 class="h6">Thông tin chi tiết công dân</h3>
+                            <div class="detail-grid">
+                                <div><strong>Họ tên:</strong> <span id="detailHoTen">-</span></div>
+                                <div><strong>CCCD:</strong> <span id="detailCccd">-</span></div>
+                                <div><strong>Ngày sinh:</strong> <span id="detailNgaySinh">-</span></div>
+                                <div><strong>Giới tính:</strong> <span id="detailGioiTinh">-</span></div>
+                                <div><strong>SĐT:</strong> <span id="detailSdt">-</span></div>
+                                <div><strong>Email:</strong> <span id="detailEmail">-</span></div>
+                                <div class="full-width"><strong>Địa chỉ:</strong> <span id="detailDiaChi">-</span></div>
+                                <div><strong>Tình trạng sức khỏe:</strong> <span id="detailSucKhoe">-</span></div>
+                                <div><strong>Ngày khám:</strong> <span id="detailNgayKham">-</span></div>
+                                <div class="full-width"><strong>Hạng thi đã chọn:</strong> <span
+                                        id="detailHangThi">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="full-width">Ghi chú
+                            <textarea name="ghiChu" class="form-control" rows="4"
+                                th:text="${application.ghiChu}"></textarea>
+                        </label>
+
+                        <div class="full-width d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <a class="btn btn-outline-secondary" th:href="@{/profiles/applications}">Hủy</a>
+                        </div>
+                    </form>
+                </section>
+            </main>
+            <footer th:replace="~{fragments/common :: footer}"></footer>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/common :: scripts('/js/profiles/applications/form.js')}"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,5 @@
+/* Citizens statistics page scoped styles */
+.table-wrap .table td,
+.table-wrap .table th {
+    vertical-align: middle;
+}
