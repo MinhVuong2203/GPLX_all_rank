@@ -4,7 +4,7 @@ USE qlgplx;
 -- ================== CÔNG DÂN ==================congdan
 CREATE TABLE CongDan (
     MaCongDan INT AUTO_INCREMENT PRIMARY KEY,
-    public_id CHAR(36) UNIQUE,
+    public_id CHAR(36) UNIQUE, 
     HoTen VARCHAR(100) NOT NULL,
     NgaySinh DATE NOT NULL,
     GioiTinh VARCHAR(10),
@@ -14,10 +14,12 @@ CREATE TABLE CongDan (
     Email VARCHAR(100) UNIQUE,
     TinhTrangSucKhoe VARCHAR(50) DEFAULT 'Khỏe mạnh',
     NgayKhamSucKhoe DATE,
-    GiayKhamSucKhoe VARCHAR(50),
+    GiayKhamSucKhoe VARCHAR(255),
     NgayTao DATETIME DEFAULT CURRENT_TIMESTAMP,
     Anh3x4 VARCHAR(255)
 );
+
+
 
 -- ================== HẠNG GPLX ==================
 CREATE TABLE HangGiayPhep (

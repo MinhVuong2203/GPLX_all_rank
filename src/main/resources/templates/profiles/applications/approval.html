@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/common :: head('Xet duyet Ho so', '/css/profiles/applications/approval.css')}"></head>
+
+<body>
+    <div class="app-shell">
+        <aside th:replace="~{fragments/common :: sidebar('applications.approval')}"></aside>
+
+        <div class="app-main">
+            <nav th:replace="~{fragments/common :: topbar('Xet duyet ho so')}"></nav>
+
+            <main class="content-wrap">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h1 class="h4 mb-0">Xet duyet ho so</h1>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-primary btn-sm" th:href="@{/profiles/applications/new}"><i class="bi bi-plus-circle me-1"></i>Them ho so</a>
+                        <a class="btn btn-outline-secondary btn-sm" th:href="@{/profiles/applications}">Danh sach ho so</a>
+                    </div>
+                </div>
+
+                <section class="card p-3">
+                    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+                    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                    <form class="row g-2 mb-3" th:action="@{/profiles/applications/approval}" method="get">
+                        <div class="col-sm-6 col-lg-4">
+                            <select name="trangThai" class="form-select">
+                                <option th:each="status : ${statusOptions}" th:value="${status}" th:selected="${status == selectedStatus}" th:text="${status}"></option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm">Loc</button>
+                        </div>
+                    </form>
+
+                    <div class="approval-layout">
+                        <div class="table-wrap">
+                            <table class="table table-striped table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Ma ho so</th>
+                                        <th>Ma cong dan</th>
+                                        <th>Hang</th>
+                                        <th>Ngay nop</th>
+                                        <th>Trang thai</th>
+                                        <th>Thanh toan</th>
+                                        <th>Ghi chu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${approvalRows.isEmpty()}">
+                                        <td colspan="7" class="text-center text-muted">Khong co ho so trong trang thai da chon.</td>
+                                    </tr>
+                                    <tr th:each="row : ${approvalRows}" class="approval-row"
+                                        th:classappend="${selectedRow != null && row.hoSoId == selectedRow.hoSoId} ? 'row-selected' : ''"
+                                        th:attr="
+                                            data-id=${row.hoSoId},
+                                            data-publicid=${row.publicId},
+                                            data-macongdan=${row.maCongDan},
+                                            data-hoten=${row.hoTen},
+                                            data-cccd=${row.cccd},
+                                            data-ngaysinh=${row.ngaySinh},
+                                            data-gioitinh=${row.gioiTinh},
+                                            data-sdt=${row.soDienThoai},
+                                            data-email=${row.email},
+                                            data-diachi=${row.diaChi},
+                                            data-hang=${row.hang},
+                                            data-tenhang=${row.tenHang},
+                                            data-ngaynop=${row.ngayNop != null ? #temporals.format(row.ngayNop, 'yyyy-MM-dd HH:mm') : '-'},
+                                            data-trangthai=${row.trangThai},
+                                            data-thanhtoan=${row.trangThaiThanhToan != null && row.trangThaiThanhToan ? 'Da thanh toan' : 'Chua thanh toan'},
+                                            data-suckhoe=${row.tinhTrangSucKhoe},
+                                            data-ngaykham=${row.ngayKhamSucKhoe},
+                                            data-giaykham=${row.giayKhamSucKhoe},
+                                            data-anh=${row.anh3x4},
+                                            data-ghichu=${row.ghiChu}">
+                                        <td th:text="${row.hoSoId}"></td>
+                                        <td th:text="${row.maCongDan}"></td>
+                                        <td th:text="${row.hang}"></td>
+                                        <td th:text="${row.ngayNop != null ? #temporals.format(row.ngayNop, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+                                        <td><span class="badge text-bg-secondary" th:text="${row.trangThai}"></span></td>
+                                        <td th:text="${row.trangThaiThanhToan != null && row.trangThaiThanhToan ? 'Da thanh toan' : 'Chua thanh toan'}"></td>
+                                        <td th:text="${row.ghiChu}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <aside class="detail-panel">
+                            <h3 class="h6">Thong tin chi tiet</h3>
+                            <div class="detail-grid">
+                                <div><strong>Ma ho so:</strong> <span id="dHoSoId" th:text="${selectedRow != null ? selectedRow.hoSoId : '-'}"></span></div>
+                                <div><strong>Ma cong dan:</strong> <span id="dMaCongDan" th:text="${selectedRow != null ? selectedRow.maCongDan : '-'}"></span></div>
+                                <div><strong>Ho ten:</strong> <span id="dHoTen" th:text="${selectedRow != null ? selectedRow.hoTen : '-'}"></span></div>
+                                <div><strong>CCCD:</strong> <span id="dCccd" th:text="${selectedRow != null ? selectedRow.cccd : '-'}"></span></div>
+                                <div><strong>Ngay sinh:</strong> <span id="dNgaySinh" th:text="${selectedRow != null ? selectedRow.ngaySinh : '-'}"></span></div>
+                                <div><strong>Gioi tinh:</strong> <span id="dGioiTinh" th:text="${selectedRow != null ? selectedRow.gioiTinh : '-'}"></span></div>
+                                <div><strong>SDT:</strong> <span id="dSdt" th:text="${selectedRow != null ? selectedRow.soDienThoai : '-'}"></span></div>
+                                <div><strong>Email:</strong> <span id="dEmail" th:text="${selectedRow != null ? selectedRow.email : '-'}"></span></div>
+                                <div class="full-width"><strong>Dia chi:</strong> <span id="dDiaChi" th:text="${selectedRow != null ? selectedRow.diaChi : '-'}"></span></div>
+                                <div><strong>Hang:</strong> <span id="dHang" th:text="${selectedRow != null ? selectedRow.hang : '-'}"></span></div>
+                                <div><strong>Ten hang:</strong> <span id="dTenHang" th:text="${selectedRow != null ? selectedRow.tenHang : '-'}"></span></div>
+                                <div><strong>Trang thai:</strong> <span id="dTrangThai" th:text="${selectedRow != null ? selectedRow.trangThai : '-'}"></span></div>
+                                <div><strong>Thanh toan:</strong> <span id="dThanhToan" th:text="${selectedRow != null && selectedRow.trangThaiThanhToan != null && selectedRow.trangThaiThanhToan ? 'Da thanh toan' : 'Chua thanh toan'}"></span></div>
+                                <div><strong>Tinh trang suc khoe:</strong> <span id="dSucKhoe" th:text="${selectedRow != null ? selectedRow.tinhTrangSucKhoe : '-'}"></span></div>
+                                <div><strong>Ngay kham:</strong> <span id="dNgayKham" th:text="${selectedRow != null ? selectedRow.ngayKhamSucKhoe : '-'}"></span></div>
+                                <div class="full-width"><strong>Ghi chu:</strong> <span id="dGhiChu" th:text="${selectedRow != null ? selectedRow.ghiChu : '-'}"></span></div>
+                                <div class="full-width"><strong>Giay kham:</strong>
+                                    <a id="dGiayKhamLink" th:if="${selectedRow != null && selectedRow.giayKhamSucKhoe}" th:href="@{'/' + ${selectedRow.giayKhamSucKhoe}}" th:text="${selectedRow.giayKhamSucKhoe}" target="_blank"></a>
+                                    <span id="dGiayKhamEmpty" th:unless="${selectedRow != null && selectedRow.giayKhamSucKhoe}">-</span>
+                                </div>
+                                <div class="full-width">
+                                    <img id="dAnh" class="avatar-preview" th:if="${selectedRow != null && selectedRow.anh3x4}" th:src="@{'/' + ${selectedRow.anh3x4}}" alt="Anh cong dan">
+                                    <span id="dAnhEmpty" th:unless="${selectedRow != null && selectedRow.anh3x4}">Khong co anh</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2 mt-3">
+                                <form id="approveForm" th:if="${selectedRow != null}" th:action="@{/profiles/applications/{id}/status(id=${selectedRow.hoSoId})}" method="post">
+                                    <input type="hidden" name="trangThai" value="Du dieu kien">
+                                    <button class="btn btn-success btn-sm" type="submit">Duyet</button>
+                                </form>
+                                <form id="rejectForm" th:if="${selectedRow != null}" th:action="@{/profiles/applications/{id}/status(id=${selectedRow.hoSoId})}" method="post">
+                                    <input type="hidden" name="trangThai" value="Khong du dieu kien">
+                                    <button class="btn btn-outline-danger btn-sm" type="submit">Tu choi</button>
+                                </form>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3" th:if="${approvalPage.totalPages > 1}">
+                        <a class="btn btn-outline-secondary btn-sm" th:if="${!approvalPage.first}" th:href="@{/profiles/applications/approval(page=${currentPage - 1},size=${pageSize},trangThai=${selectedStatus})}">Truoc</a>
+                        <span class="text-muted">Trang <strong th:text="${currentPage + 1}"></strong> / <strong th:text="${approvalPage.totalPages}"></strong></span>
+                        <a class="btn btn-outline-secondary btn-sm" th:if="${!approvalPage.last}" th:href="@{/profiles/applications/approval(page=${currentPage + 1},size=${pageSize},trangThai=${selectedStatus})}">Sau</a>
+                    </div>
+                </section>
+            </main>
+            <footer th:replace="~{fragments/common :: footer}"></footer>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/common :: scripts('/js/profiles/applications/approval.js')}"></th:block>
+</body>
+
+</html>
